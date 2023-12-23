@@ -11,8 +11,7 @@ import 'package:test/test.dart';
 import 'util.dart';
 
 void main() {
-  Map<String, dynamic> assets;
-
+  late final Map<String, Object> assets;
   setUp(() async {
     assets = {
       'b|lib/b.dart': '''final world = 'world';''',
@@ -34,7 +33,7 @@ void main() {
   test('can bootstrap dart entrypoints', () async {
     // Just do some basic sanity checking, integration tests will validate
     // things actually work.
-    var expectedOutputs = {
+    final expectedOutputs = {
       'a|web/index.digests': decodedMatches(contains('packages/')),
       'a|web/index.dart.js': decodedMatches(contains('index.dart.bootstrap')),
       'a|web/index.dart.js.map': anything,
@@ -45,27 +44,45 @@ void main() {
         contains('"packages/a/a": "packages/a/a.ddc_node"'),
         contains('"packages/b/b": "packages/b/b.ddc_node"'),
         // Requires the top level module and dart sdk.
-        contains("var Module = require('module');"),
+        contains("final Module = require('module');"),
         contains('const dart_sdk = require("dart_sdk");'),
         // Exports main on the top level module.
         contains('module.exports.main = app.web__index.main'),
         isNot(contains('lib/a')),
       ])),
     };
-    await testBuilder(NodeEntrypointBuilder(WebCompiler.DartDevc), assets,
-        outputs: expectedOutputs);
+    await testBuilder(
+      NodeEntrypointBuilder(WebCompiler.DartDevc),
+      assets,
+      outputs: expectedOutputs,
+    );
   });
 }
 
 // Runs all the DDC related builders except the entrypoint builder.
-Future<void> runPrerequisites(Map<String, dynamic> assets) async {
-  await testBuilderAndCollectAssets(const ModuleLibraryBuilder(), assets);
-  await testBuilderAndCollectAssets(MetaModuleBuilder(ddcPlatform), assets);
+Future<void> runPrerequisites(Map<String, Object> assets) async {
   await testBuilderAndCollectAssets(
-      MetaModuleCleanBuilder(ddcPlatform), assets);
-  await testBuilderAndCollectAssets(ModuleBuilder(ddcPlatform), assets);
+    const ModuleLibraryBuilder(),
+    assets,
+  );
   await testBuilderAndCollectAssets(
-      ddcKernelBuilder(BuilderOptions({})), assets);
+    MetaModuleBuilder(ddcPlatform),
+    assets,
+  );
   await testBuilderAndCollectAssets(
-      DevCompilerBuilder(platform: ddcPlatform), assets);
+    MetaModuleCleanBuilder(ddcPlatform),
+    assets,
+  );
+  await testBuilderAndCollectAssets(
+    ModuleBuilder(ddcPlatform),
+    assets,
+  );
+  await testBuilderAndCollectAssets(
+    ddcKernelBuilder(BuilderOptions({})),
+    assets,
+  );
+  await testBuilderAndCollectAssets(
+    DevCompilerBuilder(platform: ddcPlatform),
+    assets,
+  );
 }

@@ -11,7 +11,7 @@ import 'package:test/test.dart';
 void main() {
   group('console', () {
     test('integration', () {
-      var console = createConsole(createPrintStream());
+      final console = createConsole(createPrintStream());
       expect(() {
         console.log('hello world');
       }, prints('hello world\n'));

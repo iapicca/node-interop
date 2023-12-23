@@ -181,10 +181,10 @@ class _HttpServer extends Stream<io.HttpRequest> implements HttpServer {
     assert(!shared, 'Shared is not implemented yet');
 
     if (address is String) {
-      var list = await InternetAddress.lookup(address);
+      final list = await InternetAddress.lookup(address);
       address = list.first;
     }
-    var server = _HttpServer._(address, port);
+    final server = _HttpServer._(address, port);
     return server._bind();
   }
 
@@ -256,8 +256,8 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
 
   @override
   io.HttpConnectionInfo get connectionInfo {
-    var socket = nativeInstance.socket;
-    var address = InternetAddress(socket.remoteAddress);
+    final socket = nativeInstance.socket;
+    final address = InternetAddress(socket.remoteAddress);
     return _HttpConnectionInfo(socket.localPort, address, socket.remotePort);
   }
 
@@ -295,14 +295,14 @@ class NodeHttpRequest implements io.HttpRequest, HasReadable {
   @override
   Uri get requestedUri {
     if (_requestedUri == null) {
-      var socket = nativeInstance.socket;
+      final socket = nativeInstance.socket;
 
-      var proto = headers['x-forwarded-proto'];
-      var scheme;
+      final proto = headers['x-forwarded-proto'];
+      late final String scheme;
       if (proto != null) {
         scheme = proto.first;
       } else {
-        var isSecure = getProperty(socket, 'encrypted') ?? false;
+        final isSecure = getProperty(socket, 'encrypted') ?? false;
         scheme = isSecure ? 'https' : 'http';
       }
       var hostList = headers['x-forwarded-host'];
@@ -607,15 +607,15 @@ class NodeHttpResponse extends NodeIOSink implements io.HttpResponse {
 
   @override
   Future close() {
-    var responseHeaders = headers as ResponseHttpHeaders;
+    final responseHeaders = headers as ResponseHttpHeaders;
     responseHeaders.finalize();
     return super.close();
   }
 
   @override
   io.HttpConnectionInfo get connectionInfo {
-    var socket = nativeInstance.socket;
-    var address = InternetAddress(socket.remoteAddress);
+    final socket = nativeInstance.socket;
+    final address = InternetAddress(socket.remoteAddress);
     return _HttpConnectionInfo(socket.localPort, address, socket.remotePort);
   }
 

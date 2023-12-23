@@ -20,14 +20,14 @@ export 'timers.dart';
 
 /// Loads module with specified [id].
 ///
-/// Note that this is not actually a global variable and when compiled to
+/// Note that this is not actually a global finaliable and when compiled to
 /// JavaScript proxies all calls to the `require` function of main application
 /// module.
 external dynamic require(String id);
 
 /// Reference to the main module's `exports` object.
 ///
-/// Note that this is not actually a global variable and currently only
+/// Note that this is not actually a global finaliable and currently only
 /// works for the application's main module, meaning it should only be used
 /// from inside the `main` function of a Dart application.
 ///
@@ -43,7 +43,7 @@ external Console get console;
 
 /// Reference to the main module's [Module] object.
 ///
-/// Note that this is not actually a global variable and currently only
+/// Note that this is not actually a global finaliable and currently only
 /// works for the application's main module, meaning it should only be used
 /// from inside the `main` function of a Dart application.
 external Module get module;

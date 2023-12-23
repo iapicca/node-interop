@@ -1,0 +1,180 @@
+name: kohvikutepaev
+
+packages:
+  - build_node_compilers
+  - e2e_interop_test
+  - node_http
+  - node_interop
+  - node_io
+
+
+command:
+  bootstrap:
+    usePubspecOverrides: false
+
+ignore:
+  - build/**
+
+scripts:
+  setup:
+    description: setup project
+    run: |
+      melos run setup:dependencies_dart && \
+      melos run setup:dependencies_flutter
+
+  lint:
+    description: lint all packages
+    run: |
+      melos run lint:format --no-select && \
+      melos run lint:format-check --no-select
+
+  analyze:
+    description: analyze all packages
+    run: |
+      melos run analyze:dart && \
+      melos run analyze:flutter
+
+  test: 
+    description: run all Dart & Flutter tests in this project.
+    run: |
+      melos run test:dart && \
+      melos run test:flutter
+
+  lint:format:
+    description: Run `dart format` for all packages.
+    run: |
+      melos exec \
+      --concurrency 1 \
+      -- \
+      dart format . \
+      --fix
+    packageFilters:
+      fileExists: 
+        - pubspec.yaml
+
+  lint:format-check:
+    description: Run `dart format` checks for all packages.
+    run: |
+      melos exec \
+      --concurrency 1 \
+      -- \
+      dart format . \
+      --set-exit-if-changed
+    packageFilters:
+      fileExists: 
+        - pubspec.yaml
+
+  analyze:dart:
+    description: Run dart analyze
+    run: |
+      melos exec \
+      --concurrency 1 \
+      -- \
+      dart analyze .
+    packageFilters:
+      flutter: false
+      fileExists: 
+        - pubspec.yaml
+
+  analyze:flutter:
+    description: Run flutter analyze
+    run: |
+      melos exec \
+      --concurrency 1 \
+      -- \
+      flutter analyze .
+    packageFilters:
+      flutter: true
+
+  test:dart:
+    description: Run Dart tests for a specific package in this project.
+    run: |
+      melos exec \
+      --concurrency 1 \
+      --fail-fast \
+      -- \
+      dart run coverage:test_with_coverage
+    packageFilters:
+      flutter: false
+      dirExists: 
+        - test
+      fileExists: 
+        - pubspec.yaml
+
+  test:flutter:
+    description: Run Flutter tests for a specific package in this project.
+    run: |
+      melos exec \
+      --concurrency 1 \
+      --fail-fast \
+      -- \
+      flutter test --coverage
+    packageFilters:
+      flutter: true
+      dirExists: 
+        - test
+
+
+  setup:icon:
+    description: create launcer icon and favicon
+    run: |
+          melos exec \
+          --concurrency 1 \
+          --fail-fast \
+          -- \
+          flutter pub run \
+          flutter_launcher_icons
+    packageFilters:
+      flutter: true
+      dependsOn:
+        - flutter_launcher_icons
+
+  setup:splash:
+    description: create splash screen
+    run: |
+      melos exec \
+      --concurrency 1 \
+      --fail-fast \
+      -- \
+      flutter pub run \
+      flutter_native_splash:create \
+      --path=splashscreen.yaml
+    packageFilters:
+      flutter: true
+      dependsOn:
+        - flutter_native_splash
+
+  setup:codegen:
+    description: code generation with build_runner
+    run: |
+      melos exec \
+      --concurrency 1 \
+      --fail-fast \
+      -- \
+      flutter pub run build_runner build \
+      --delete-conflicting-outputs
+    packageFilters:
+      dependsOn:
+        - build_runner
+
+  setup:dependencies_flutter:
+    description: fetch flutter dependencies
+    run: |
+      melos exec \
+      --concurrency 1 \
+      --fail-fast \
+      -- \
+      flutter pub get
+    packageFilters:
+      flutter: true
+
+  setup:dependencies_dart:
+    description: fetch dart dependencies
+    run: |
+      melos exec \
+      --concurrency 1 \
+      --fail-fast \
+      -- \
+      dart pub get
+    packageFilters:
+      flutter: false

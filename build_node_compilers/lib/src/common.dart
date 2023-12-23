@@ -21,10 +21,10 @@ String defaultAnalysisOptionsArg(ScratchSpace scratchSpace) =>
 // TODO: better solution for a .packages file, today we just create a new one
 // for every kernel build action.
 Future<File> createPackagesFile(Iterable<AssetId> allAssets) async {
-  var allPackages = allAssets.map((id) => id.package).toSet();
-  var packagesFileDir =
+  final allPackages = allAssets.map((id) => id.package).toSet();
+  final packagesFileDir =
       await Directory.systemTemp.createTemp('kernel_builder_');
-  var packagesFile = File(p.join(packagesFileDir.path, '.packages'));
+  final packagesFile = File(p.join(packagesFileDir.path, '.packages'));
   await packagesFile.create();
   await packagesFile.writeAsString(allPackages
       .map((pkg) => '$pkg:$multiRootScheme:///packages/$pkg')
@@ -35,17 +35,20 @@ Future<File> createPackagesFile(Iterable<AssetId> allAssets) async {
 /// Validates that [config] only has the top level keys [supportedOptions].
 ///
 /// Throws an [ArgumentError] if not.
-void validateOptions(Map<String, dynamic> config, List<String> supportedOptions,
-    String builderKey,
-    {List<String> deprecatedOptions}) {
-  deprecatedOptions ??= [];
-  var unsupported = config.keys.where(
-      (o) => !supportedOptions.contains(o) && !deprecatedOptions.contains(o));
+void validateOptions(
+  Map<String, Object?> config,
+  List<String> supportedOptions,
+  String builderKey, {
+  List<String> deprecatedOptions = const [],
+}) {
+  final unsupported = config.keys.where(
+    (o) => !supportedOptions.contains(o) && !deprecatedOptions.contains(o),
+  );
   if (unsupported.isNotEmpty) {
     throw ArgumentError.value(unsupported.join(', '), builderKey,
         'only $supportedOptions are supported options, but got');
   }
-  var deprecated = config.keys.where(deprecatedOptions.contains);
+  final deprecated = config.keys.where(deprecatedOptions.contains);
   if (deprecated.isNotEmpty) {
     log.warning('Found deprecated options ${deprecated.join(', ')}. These no '
         'longer have any effect and should be removed.');

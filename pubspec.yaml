@@ -1,0 +1,8 @@
+name: dart_node
+homepage: https://github.com/iapicca/kohvikutepaev
+
+environment:
+  sdk: ^3.2.0
+  
+dev_dependencies:
+  melos: ^3.2.0

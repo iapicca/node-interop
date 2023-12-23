@@ -1,3 +1,7 @@
+# 0.3.3
+
+- Update dependencies for Dart 3.2.0
+
 # 0.3.2
 
 - Allowed Dart2JS to run in unsound null-safety mode.

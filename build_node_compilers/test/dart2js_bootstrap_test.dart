@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 import 'util.dart';
 
 void main() {
-  Map<String, dynamic> assets;
+  late final Map<String, Object> assets;
   final platform = dart2jsPlatform;
 
   setUp(() async {
@@ -28,20 +28,35 @@ void main() {
     };
 
     // Set up all the other required inputs for this test.
-    await testBuilderAndCollectAssets(const ModuleLibraryBuilder(), assets);
-    await testBuilderAndCollectAssets(MetaModuleBuilder(platform), assets);
-    await testBuilderAndCollectAssets(MetaModuleCleanBuilder(platform), assets);
-    await testBuilderAndCollectAssets(ModuleBuilder(platform), assets);
+    await testBuilderAndCollectAssets(
+      const ModuleLibraryBuilder(),
+      assets,
+    );
+    await testBuilderAndCollectAssets(
+      MetaModuleBuilder(platform),
+      assets,
+    );
+    await testBuilderAndCollectAssets(
+      MetaModuleCleanBuilder(platform),
+      assets,
+    );
+    await testBuilderAndCollectAssets(
+      ModuleBuilder(platform),
+      assets,
+    );
   });
 
   test('can bootstrap dart entrypoints', () async {
     // Just do some basic sanity checking, integration tests will validate
     // things actually work.
-    var expectedOutputs = {
+    final expectedOutputs = {
       'a|web/index.dart.js': decodedMatches(contains('world')),
       'a|web/index.dart.js.map': anything,
     };
-    await testBuilder(NodeEntrypointBuilder(WebCompiler.Dart2Js), assets,
-        outputs: expectedOutputs);
+    await testBuilder(
+      NodeEntrypointBuilder(WebCompiler.Dart2Js),
+      assets,
+      outputs: expectedOutputs,
+    );
   });
 }

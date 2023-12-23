@@ -101,12 +101,12 @@ abstract class TTYWriteStream extends Socket {
   ///
   /// Due to the nature of colors in terminals it is possible to either have
   /// false positives or false negatives. It depends on process information and
-  /// the environment variables that may lie about what terminal is used. It is
+  /// the environment finaliables that may lie about what terminal is used. It is
   /// possible to pass in an env object to simulate the usage of a specific
   /// terminal. This can be useful to check how specific environment settings
   /// behave.
   ///
-  /// The optional [env] argument can be used to pass environment variables to
+  /// The optional [env] argument can be used to pass environment finaliables to
   /// check. This enables simulating the usage of a specific terminal.
   /// Default: `process.env`.
   external num getColorDepth([dynamic env]);

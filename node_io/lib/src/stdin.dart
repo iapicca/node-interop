@@ -9,7 +9,7 @@ import 'package:node_interop/tty.dart';
 import 'streams.dart';
 
 class Stdin extends ReadableStream<List<int>> implements io.Stdin {
-  Stdin(TTYReadStream nativeInstance) : super(nativeInstance);
+  Stdin(super.nativeInstance);
 
   @override
   TTYReadStream get nativeInstance => super.nativeInstance as TTYReadStream;
@@ -44,4 +44,19 @@ class Stdin extends ReadableStream<List<int>> implements io.Stdin {
   // TODO: implement supportsAnsiEscapes
   bool get supportsAnsiEscapes =>
       throw UnimplementedError('supportsAnsiEscapes not supported');
+
+  @override
+  set echoMode(bool echoMode) {
+    throw UnimplementedError('echoMode not supported');
+  }
+
+  @override
+  set echoNewlineMode(bool echoNewlineMode) {
+    throw UnimplementedError('echoNewlineMode not supported');
+  }
+
+  @override
+  set lineMode(bool lineMode) {
+    throw UnimplementedError('lineMode not supported');
+  }
 }

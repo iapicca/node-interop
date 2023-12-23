@@ -29,30 +29,29 @@ String toJSIdentifier(String name) {
   if (name.isEmpty) return r'$';
 
   // Escape any invalid characters
-  StringBuffer buffer;
+  StringBuffer? buffer;
   for (var i = 0; i < name.length; i++) {
-    var ch = name[i];
-    var needsEscape = ch == r'$' || _invalidCharInIdentifier.hasMatch(ch);
-    if (needsEscape && buffer == null) {
-      buffer = StringBuffer(name.substring(0, i));
+    final ch = name[i];
+    final needsEscape = ch == r'$' || _invalidCharInIdentifier.hasMatch(ch);
+    if (needsEscape) {
+      buffer ??= StringBuffer(name.substring(0, i));
     }
-    if (buffer != null) {
-      buffer.write(needsEscape ? '\$${ch.codeUnits.join("")}' : ch);
-    }
+
+    buffer?.write(needsEscape ? '\$${ch.codeUnits.join("")}' : ch);
   }
 
-  var result = buffer != null ? '$buffer' : name;
+  final result = buffer != null ? '$buffer' : name;
   // Ensure the identifier first character is not numeric and that the whole
   // identifier is not a keyword.
-  if (result.startsWith(RegExp('[0-9]')) || invalidVariableName(result)) {
+  if (result.startsWith(RegExp('[0-9]')) || invalidfinaliableName(result)) {
     return '\$$result';
   }
   return result;
 }
 
-/// Returns true for invalid JS variable names, such as keywords.
-/// Also handles invalid variable names in strict mode, like "arguments".
-bool invalidVariableName(String keyword, {bool strictMode = true}) {
+/// Returns true for invalid JS finaliable names, such as keywords.
+/// Also handles invalid finaliable names in strict mode, like "arguments".
+bool invalidfinaliableName(String keyword, {bool strictMode = true}) {
   switch (keyword) {
     // http://www.ecma-international.org/ecma-262/6.0/#sec-future-reserved-words
     case 'await':
@@ -86,7 +85,7 @@ bool invalidVariableName(String keyword, {bool strictMode = true}) {
     case 'throw':
     case 'try':
     case 'typeof':
-    case 'var':
+    case 'final':
     case 'void':
     case 'while':
     case 'with':

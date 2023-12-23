@@ -17,20 +17,20 @@ import 'platforms.dart';
 
 Future<void> bootstrapDart2Js(
     BuildStep buildStep, List<String> dart2JsArgs) async {
-  var dartEntrypointId = buildStep.inputId;
-  var moduleId =
+  final dartEntrypointId = buildStep.inputId;
+  final moduleId =
       dartEntrypointId.changeExtension(moduleExtension(dart2jsPlatform));
-  var args = <String>[];
+  final args = <String>[];
   {
-    var module = Module.fromJson(
+    final module = Module.fromJson(
         json.decode(await buildStep.readAsString(moduleId))
-            as Map<String, dynamic>);
+            as Map<String, Object?>);
     List<Module> allDeps;
     try {
       allDeps = (await module.computeTransitiveDependencies(buildStep))
         ..add(module);
     } on UnsupportedModules catch (e) {
-      var librariesString = (await e.exactLibraries(buildStep).toList())
+      final librariesString = (await e.exactLibraries(buildStep).toList())
           .map((lib) => AssetId(lib.id.package,
               lib.id.path.replaceFirst(moduleLibraryExtension, '.dart')))
           .join('\n');
@@ -45,37 +45,41 @@ https://github.com/dart-lang/build/blob/master/docs/faq.md#how-can-i-resolve-ski
       return;
     }
 
-    var scratchSpace = await buildStep.fetchResource(scratchSpaceResource);
-    var allSrcs = allDeps.expand((module) => module.sources);
+    final scratchSpace = await buildStep.fetchResource(scratchSpaceResource);
+    final allSrcs = allDeps.expand((module) => module.sources);
     await scratchSpace.ensureAssets(allSrcs, buildStep);
-    var packageFile =
+    final packageFile =
         await _createPackageFile(allSrcs, buildStep, scratchSpace);
 
-    var dartPath = dartEntrypointId.path.startsWith('lib/')
+    final dartPath = dartEntrypointId.path.startsWith('lib/')
         ? 'package:${dartEntrypointId.package}/'
             '${dartEntrypointId.path.substring('lib/'.length)}'
         : dartEntrypointId.path;
-    var jsOutputPath =
+    final jsOutputPath =
         '${p.withoutExtension(dartPath.replaceFirst('package:', 'packages/'))}'
         '$jsEntrypointExtension';
-    args = dart2JsArgs.toList()
-      ..addAll([
-        '--packages=$packageFile',
-        '-o$jsOutputPath',
-        dartPath,
-      ]);
+    args.addAll(
+      dart2JsArgs
+        ..addAll(
+          [
+            '--packages=$packageFile',
+            '-o$jsOutputPath',
+            dartPath,
+          ],
+        ),
+    );
   }
 
-  var dart2js = await buildStep.fetchResource(dart2JsWorkerResource);
-  var result = await dart2js.compile(args);
-  var jsOutputId = dartEntrypointId.changeExtension(jsEntrypointExtension);
-  var jsOutputFile = scratchSpace.fileFor(jsOutputId);
+  final dart2js = await buildStep.fetchResource(dart2JsWorkerResource);
+  final result = await dart2js.compile(args);
+  final jsOutputId = dartEntrypointId.changeExtension(jsEntrypointExtension);
+  final jsOutputFile = scratchSpace.fileFor(jsOutputId);
   if (result.succeeded && await jsOutputFile.exists()) {
     log.info(result.output);
     addNodePreamble(jsOutputFile);
 
     await scratchSpace.copyOutput(jsOutputId, buildStep);
-    var jsSourceMapId =
+    final jsSourceMapId =
         dartEntrypointId.changeExtension(jsEntrypointSourceMapExtension);
     await _copyIfExists(jsSourceMapId, scratchSpace, buildStep);
   } else {
@@ -85,15 +89,15 @@ https://github.com/dart-lang/build/blob/master/docs/faq.md#how-can-i-resolve-ski
 
 Future<void> _copyIfExists(
     AssetId id, ScratchSpace scratchSpace, AssetWriter writer) async {
-  var file = scratchSpace.fileFor(id);
+  final file = scratchSpace.fileFor(id);
   if (await file.exists()) {
     await scratchSpace.copyOutput(id, writer);
   }
 }
 
 void addNodePreamble(File output) {
-  var preamble = getPreamble(minified: true);
-  var contents = output.readAsStringSync();
+  final preamble = getPreamble(minified: true);
+  final contents = output.readAsStringSync();
   output
     ..writeAsStringSync(preamble)
     ..writeAsStringSync(contents, mode: FileMode.append);
@@ -112,13 +116,13 @@ void addNodePreamble(File output) {
 /// `web/foo-bar.dart`.
 Future<String> _createPackageFile(Iterable<AssetId> inputSources,
     BuildStep buildStep, ScratchSpace scratchSpace) async {
-  var inputUri = buildStep.inputId.uri;
-  var packageFileName =
+  final inputUri = buildStep.inputId.uri;
+  final packageFileName =
       '.package-${md5.convert(inputUri.toString().codeUnits)}';
-  var packagesFile =
+  final packagesFile =
       scratchSpace.fileFor(AssetId(buildStep.inputId.package, packageFileName));
-  var packageNames = inputSources.map((s) => s.package).toSet();
-  var packagesFileContent =
+  final packageNames = inputSources.map((s) => s.package).toSet();
+  final packagesFileContent =
       packageNames.map((n) => '$n:packages/$n/').join('\n');
   await packagesFile
       .writeAsString('# Generated for $inputUri\n$packagesFileContent');

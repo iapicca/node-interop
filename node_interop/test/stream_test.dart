@@ -11,10 +11,10 @@ import 'package:test/test.dart';
 void main() {
   group('stream', () {
     test('integration', () async {
-      var b = StringBuffer();
-      var r = createStringReadStream();
-      var w = createStringBufferStream(b);
-      var completer = Completer<String>();
+      final b = StringBuffer();
+      final r = createStringReadStream();
+      final w = createStringBufferStream(b);
+      final completer = Completer<String>();
 
       r.pipe(w).on('finish', allowInterop(() {
         completer.complete(b.toString());

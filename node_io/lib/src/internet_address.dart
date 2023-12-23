@@ -19,7 +19,7 @@ export 'dart:io' show InternetAddressType;
 /// endpoint to which a socket can connect or a listening socket can
 /// bind.
 class InternetAddress implements io.InternetAddress {
-  static const int _IPV6_ADDR_LENGTH = 16;
+  static const _ipv6AddressLenght = 16;
 
   final String? _host;
   final Uint8List _inAddr;
@@ -35,8 +35,7 @@ class InternetAddress implements io.InternetAddress {
       ? io.InternetAddressType.IPv4
       : io.InternetAddressType.IPv6;
 
-  InternetAddress._(this.address, [this._host])
-      : _inAddr = _inet_pton(address) {
+  InternetAddress._(this.address, [this._host]) : _inAddr = _inetPton(address) {
     if (net.isIP(address) == 0) {
       throw ArgumentError('$address is not valid.');
     }
@@ -65,7 +64,7 @@ class InternetAddress implements io.InternetAddress {
         completer.completeError(error);
       } else {
         final addresses = List<DNSAddress>.from(result);
-        var list = addresses
+        final list = addresses
             .map((item) => InternetAddress._(item.address, host))
             .toList(growable: false);
         completer.complete(list);
@@ -97,10 +96,10 @@ class InternetAddress implements io.InternetAddress {
       case io.InternetAddressType.IPv4:
         return _inAddr[0] == 127;
       case io.InternetAddressType.IPv6:
-        for (var i = 0; i < _IPV6_ADDR_LENGTH - 1; i++) {
+        for (var i = 0; i < _ipv6AddressLenght - 1; i++) {
           if (_inAddr[i] != 0) return false;
         }
-        return _inAddr[_IPV6_ADDR_LENGTH - 1] == 1;
+        return _inAddr[_ipv6AddressLenght - 1] == 1;
     }
     throw StateError('Unreachable');
   }
@@ -139,7 +138,7 @@ class InternetAddress implements io.InternetAddress {
   }
 
   @override
-  String toString() => '$address';
+  String toString() => address;
 }
 
 const int _kColon = 58;
@@ -148,7 +147,7 @@ const int _kColon = 58;
 ///
 /// This implementation assumes that [ip] address has been validated for
 /// correctness.
-Uint8List _inet_pton(String ip) {
+Uint8List _inetPton(String ip) {
   if (ip.contains(':')) {
     // ipv6
     final result = Uint8List(16);

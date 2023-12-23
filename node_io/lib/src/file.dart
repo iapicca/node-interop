@@ -38,7 +38,7 @@ class _WriteStream extends NodeIOSink {
 /// Create a File object with a pathname to access the specified file on the
 /// file system from your program.
 ///
-///     var myFile = File('file.txt');
+///     final myFile = File('file.txt');
 ///
 /// The File class contains methods for manipulating files and their contents.
 /// Using methods in this class, you can open and close files, read to and write
@@ -79,7 +79,7 @@ class _WriteStream extends NodeIOSink {
 /// Open the file with [openRead], which returns a stream that
 /// provides the data in the file as chunks of bytes.
 /// Listen to the stream for data and process as needed.
-/// You can use various transformers in succession to manipulate the
+/// You can use finalious transformers in succession to manipulate the
 /// data into the required format or to prepare it for output.
 ///
 /// You might want to use a stream to read large files,
@@ -126,8 +126,8 @@ class _WriteStream extends NodeIOSink {
 ///     import 'package:node_io/node_io.dart';
 ///
 ///     void main() {
-///       var file = File('file.txt');
-///       var sink = file.openWrite();
+///       final file = File('file.txt');
+///       final sink = file.openWrite();
 ///       sink.write('FILE ACCESSED ${DateTime.now()}\n');
 ///
 ///       // Close the IOSink to free system resources.
@@ -239,13 +239,13 @@ class File extends FileSystemEntity implements file.File {
 
   @override
   Future<bool> exists() async {
-    var stat = await FileStat.stat(path);
+    final stat = await FileStat.stat(path);
     return stat.type == io.FileSystemEntityType.file;
   }
 
   @override
   bool existsSync() {
-    var stat = FileStat.statSync(path);
+    final stat = FileStat.statSync(path);
     return stat.type == io.FileSystemEntityType.file;
   }
 
@@ -275,10 +275,10 @@ class File extends FileSystemEntity implements file.File {
 
   @override
   Stream<Uint8List> openRead([int? start, int? end]) {
-    var options = ReadStreamOptions();
+    final options = ReadStreamOptions();
     if (start != null) options.start = start;
     if (end != null) options.end = end;
-    var nativeStream = fs.createReadStream(path, options);
+    final nativeStream = fs.createReadStream(path, options);
     return _ReadStream(nativeStream);
   }
 
@@ -290,9 +290,9 @@ class File extends FileSystemEntity implements file.File {
   io.IOSink openWrite(
       {io.FileMode mode = io.FileMode.write, Encoding encoding = utf8}) {
     assert(mode == io.FileMode.write || mode == io.FileMode.append);
-    var flags = (mode == io.FileMode.append) ? 'a+' : 'w';
-    var options = WriteStreamOptions(flags: flags);
-    var stream = fs.createWriteStream(path, options);
+    final flags = (mode == io.FileMode.append) ? 'a+' : 'w';
+    final options = WriteStreamOptions(flags: flags);
+    final stream = fs.createWriteStream(path, options);
     return _WriteStream(stream, encoding);
   }
 
@@ -320,7 +320,7 @@ class File extends FileSystemEntity implements file.File {
 
   @override
   Future<String> readAsString({Encoding encoding = utf8}) async {
-    var bytes = await readAsBytes();
+    final bytes = await readAsBytes();
     return encoding.decode(bytes);
   }
 
@@ -400,7 +400,7 @@ class File extends FileSystemEntity implements file.File {
   @override
   Future<file.File> writeAsBytes(List<int> bytes,
       {io.FileMode mode = io.FileMode.write, bool flush = false}) async {
-    var sink = openWrite(mode: mode);
+    final sink = openWrite(mode: mode);
     sink.add(bytes);
     if (flush == true) {
       await sink.flush();
@@ -412,8 +412,8 @@ class File extends FileSystemEntity implements file.File {
   @override
   void writeAsBytesSync(List<int> bytes,
       {io.FileMode mode = io.FileMode.write, bool flush = false}) {
-    var flag = _RandomAccessFile.fileModeToJsFlags(mode);
-    var options = jsify({'flag': flag});
+    final flag = _RandomAccessFile.fileModeToJsFlags(mode);
+    final options = jsify({'flag': flag});
     fs.writeFileSync(_absolutePath, Buffer.from(bytes), options);
   }
 
@@ -422,7 +422,7 @@ class File extends FileSystemEntity implements file.File {
       {io.FileMode mode = io.FileMode.write,
       Encoding encoding = utf8,
       bool flush = false}) async {
-    var sink = openWrite(mode: mode, encoding: encoding);
+    final sink = openWrite(mode: mode, encoding: encoding);
     sink.write(contents);
     if (flush == true) {
       await sink.flush();
@@ -498,7 +498,7 @@ class _RandomAccessFile implements io.RandomAccessFile {
   @override
   Future<io.RandomAccessFile> close() {
     return _dispatch(() {
-      var completer = Completer<io.RandomAccessFile>();
+      final completer = Completer<io.RandomAccessFile>();
       void callback(err) {
         if (err == null) {
           completer.complete(this);
@@ -507,7 +507,7 @@ class _RandomAccessFile implements io.RandomAccessFile {
         }
       }
 
-      var jsCallback = js.allowInterop(callback);
+      final jsCallback = js.allowInterop(callback);
       fs.close(fd, jsCallback);
 
       return completer.future;
@@ -574,7 +574,7 @@ class _RandomAccessFile implements io.RandomAccessFile {
   @override
   Future<Uint8List> read(int bytes) {
     return _dispatch(() {
-      var buffer = Buffer.alloc(bytes);
+      final buffer = Buffer.alloc(bytes);
       final completer = Completer<Uint8List>();
       void cb(Object? err, bytesRead, buffer) {
         if (err != null) {
@@ -606,7 +606,7 @@ class _RandomAccessFile implements io.RandomAccessFile {
   @override
   Future<int> readInto(List<int> buffer, [int start = 0, int? end]) {
     end ??= buffer.length;
-    var bytes = end - start;
+    final bytes = end - start;
     if (bytes == 0) return Future.value(0);
     return read(bytes).then((readBytes) {
       buffer.setRange(start, end!, readBytes);
@@ -618,9 +618,9 @@ class _RandomAccessFile implements io.RandomAccessFile {
   int readIntoSync(List<int> buffer, [int start = 0, int? end]) {
     _checkAvailable();
     end ??= buffer.length;
-    var bytes = end - start;
+    final bytes = end - start;
     if (bytes == 0) return 0;
-    var readBytes = readSync(bytes);
+    final readBytes = readSync(bytes);
     buffer.setRange(start, end, readBytes);
     return bytes;
   }
@@ -628,7 +628,7 @@ class _RandomAccessFile implements io.RandomAccessFile {
   @override
   Uint8List readSync(int bytes) {
     _checkAvailable();
-    var buffer = Buffer.alloc(bytes);
+    final buffer = Buffer.alloc(bytes);
     final bytesRead = fs.readSync(fd, buffer, 0, bytes, _position);
     assert(bytesRead == bytes);
     _position += bytes;
@@ -752,7 +752,7 @@ class _RandomAccessFile implements io.RandomAccessFile {
       return Future.error(io.FileSystemException('File closed', path));
     }
     if (_asyncDispatched) {
-      var msg = 'An async operation is currently pending';
+      final msg = 'An async operation is currently pending';
       return Future.error(io.FileSystemException(msg, path));
     }
     if (markClosed) {

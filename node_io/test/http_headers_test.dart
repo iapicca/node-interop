@@ -1,8 +1,6 @@
 // Copyright (c) 2017, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-// @dart=2.9
-
 @TestOn('node')
 @JS()
 library node_io.http_headers_test;
@@ -51,8 +49,8 @@ void main() {
 
   group('RequestHttpHeaders', () {
     HeadersFixture jsHeaders = require(headersFile);
-    var headers = RequestHttpHeaders(jsHeaders.request);
-    var emptyHeaders = RequestHttpHeaders(jsHeaders.minimal);
+    final headers = RequestHttpHeaders(jsHeaders.request);
+    final emptyHeaders = RequestHttpHeaders(jsHeaders.minimal);
 
     test('chunkedTransferEncoding', () async {
       expect(headers.chunkedTransferEncoding, isTrue);

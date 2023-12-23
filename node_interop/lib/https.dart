@@ -31,7 +31,7 @@ HTTPS? _https;
 ///
 /// This is equivalent of Node's `new https.Agent([options])`.
 HttpsAgent createHttpsAgent([HttpsAgentOptions? options]) {
-  var args = (options == null) ? [] : [options];
+  final args = (options == null) ? [] : [options];
   return callConstructor(https.Agent, args);
 }
 

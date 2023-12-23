@@ -1,28 +1,26 @@
 // Copyright (c) 2018, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-// @dart=2.9
-
 @TestOn('node')
 import 'dart:async';
 import 'dart:convert';
-import 'dart:js';
-
+import 'dart:io';
 import 'package:node_interop/http.dart' as js;
 import 'package:node_interop/util.dart';
-import 'package:node_io/node_io.dart';
+import 'package:node_io/node_io.dart' as node_io;
 import 'package:test/test.dart';
 
 void main() {
   group('HttpServer', () {
-    HttpServer server;
+    late final HttpServer server;
 
     setUpAll(() async {
-      server = await HttpServer.bind('127.0.0.1', 8181);
+      server = await node_io.HttpServer.bind('127.0.0.1', 8181);
       server.listen((request) async {
         if (request.uri.path == '/redirect') {
-          await request.response
-              .redirect(Uri.parse('http://127.0.0.1:8181/redirect-success'));
+          await request.response.redirect(
+            Uri.parse('http://127.0.0.1:8181/redirect-success'),
+          );
           return;
         } else if (request.uri.path == '/headers_add_set') {
           request.response.headers.add('add_no_case', 'test1');
@@ -39,7 +37,7 @@ void main() {
         request.response.headers.contentType = ContentType.text;
         request.response.headers.set('X-Foo', 'bar');
         request.response.statusCode = 200;
-        if (body != null && body.isNotEmpty) {
+        if (body.isNotEmpty) {
           final jsonData = json.decode(body);
           request.response.write(json.encode(jsonData));
         } else {
@@ -62,14 +60,14 @@ void main() {
     test('redirect', () async {
       final response =
           await makeGet(Uri.parse('http://127.0.0.1:8181/redirect'));
-      final headers = Map<String, dynamic>.from(dartify(response.headers));
+      final headers = Map<String, Object?>.from(dartify(response.headers));
       expect(headers['location'], 'http://127.0.0.1:8181/redirect-success');
     });
 
     test('headers', () async {
       final response =
           await makeGet(Uri.parse('http://127.0.0.1:8181/headers_add_set'));
-      final headers = Map<String, dynamic>.from(dartify(response.headers));
+      final headers = Map<String, Object?>.from(dartify(response.headers));
       expect(headers['add_no_case'], 'test1, test2');
       expect(headers['add_No_case'], isNull);
       expect(headers['set_no_case'], 'test2');

@@ -1,5 +1,3 @@
-// @dart=2.9
-
 @TestOn('node')
 library platform_test;
 
@@ -7,7 +5,7 @@ import 'package:node_interop/node.dart';
 import 'package:node_io/node_io.dart';
 import 'package:test/test.dart';
 
-void main([String scriptName = 'platform_test.dart']) {
+void main({String scriptName = 'platform_test.dart'}) {
   group('Platform', () {
     test('environment', () {
       expect(Platform.environment, isMap);

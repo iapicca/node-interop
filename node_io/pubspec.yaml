@@ -1,22 +1,20 @@
 name: node_io
 description: Like dart:io but with Node.js.
-version: 2.2.0
+version: 2.2.1
 homepage: https://github.com/pulyaevskiy/node-interop
-author: Anatoly Pulyaevskiy <anatoly.pulyaevskiy@gmail.com>
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ^3.2.0
 
 dependencies:
-  file: ^6.1.4
-  node_interop: ^2.0.2
-  path: ^1.8.0
+  file: ^7.0.0
+  node_interop: ^2.1.2
+  path: ^1.8.3
 
 dev_dependencies:
-  js: ^0.6.0
-  pedantic: ^1.0.0
-  test: ^1.0.0
-  build_runner: ">=1.10.0 <1.10.2"
+  build_runner: ^2.4.6
   build_node_compilers: ^0.3.0
-  build_test: ^1.0.0
-
+  build_test: ^2.2.1
+  js: ^0.6.7
+  lints: ^3.0.0
+  test: ^1.24.9

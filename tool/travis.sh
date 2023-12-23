@@ -29,12 +29,3 @@ else
     echo "> pub run test (vm) ==============================================="
     pub run test -r expanded
 fi
-
-# Remove built sources to prevent from analyzing with dartfmt
-rm -rf build/
-
-echo "> dartfmt -n --set-exit-if-changed . =============================="
-dartfmt -n --set-exit-if-changed .
-
-echo "> dartanalyzer --fatal-infos --fatal-warnings . ==================="
-dartanalyzer --fatal-infos --fatal-warnings .

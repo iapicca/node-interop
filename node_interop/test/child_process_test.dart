@@ -15,7 +15,7 @@ void main() {
       final completer = Completer<int>();
       childProcess.exec('ls -la', ExecOptions(),
           allowInterop((NodeJsError? error, stdout, stderr) {
-        var result = (error == null) ? 0 : int.parse(error.code);
+        final result = (error == null) ? 0 : int.parse(error.code);
         completer.complete(result);
       }));
       expect(completer.future, completion(0));

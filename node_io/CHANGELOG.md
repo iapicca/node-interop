@@ -1,3 +1,7 @@
+## 2.2.1
+
+- Update dependencies for Dart 3.2.0
+
 ## 2.2.0
 
 - Support the `exclusive` option for `File.create` and `File.createSync`.

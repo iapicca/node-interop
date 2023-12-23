@@ -1,8 +1,6 @@
 // Copyright (c) 2020, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-// @dart=2.9
-
 @TestOn('node')
 library file_system_test;
 
@@ -25,9 +23,9 @@ void main() {
       });
 
       test('returns true for the same link', () async {
-        var filepath =
+        final filepath =
             createFile('file_system_async_identical_true_test.txt', 'data');
-        var linkpath = createPath('file_system_async_identical_true.txt');
+        final linkpath = createPath('file_system_async_identical_true.txt');
         await Link(linkpath).create(filepath);
 
         expect(await nodeFileSystem.identical(linkpath, linkpath), isTrue);
@@ -43,9 +41,9 @@ void main() {
       });
 
       test('returns false for a link and its target', () async {
-        var filepath =
+        final filepath =
             createFile('file_system_async_identical_false_test.txt', 'data');
-        var linkpath = createPath('file_system_async_identical_false.txt');
+        final linkpath = createPath('file_system_async_identical_false.txt');
         await Link(linkpath).create(filepath);
 
         expect(await nodeFileSystem.identical(linkpath, filepath), isFalse);
@@ -68,9 +66,9 @@ void main() {
       });
 
       test('returns true for the same link', () async {
-        var filepath =
+        final filepath =
             createFile('file_system_sync_identical_true_test.txt', 'data');
-        var linkpath = createPath('file_system_sync_identical_true.txt');
+        final linkpath = createPath('file_system_sync_identical_true.txt');
         await Link(linkpath).create(filepath);
 
         expect(nodeFileSystem.identicalSync(linkpath, linkpath), isTrue);
@@ -86,9 +84,9 @@ void main() {
       });
 
       test('returns false for a link and its target', () async {
-        var filepath =
+        final filepath =
             createFile('file_system_sync_identical_false_test.txt', 'data');
-        var linkpath = createPath('file_system_sync_identical_false.txt');
+        final linkpath = createPath('file_system_sync_identical_false.txt');
         await Link(linkpath).create(filepath);
 
         expect(nodeFileSystem.identicalSync(linkpath, filepath), isFalse);
@@ -115,7 +113,7 @@ void main() {
         });
 
         test('returns file for a link to a file', () async {
-          var linkpath = createPath('file_system_type_async_file_follow.txt');
+          final linkpath = createPath('file_system_type_async_file_follow.txt');
           await Link(linkpath).create(absolute('README.md'));
 
           expect(
@@ -123,7 +121,7 @@ void main() {
         });
 
         test('returns directory for a link to a directory', () async {
-          var linkpath = createPath('file_system_type_async_dir_follow');
+          final linkpath = createPath('file_system_type_async_dir_follow');
           await Link(linkpath).create(absolute('lib'));
 
           expect(await nodeFileSystem.type(linkpath),
@@ -131,7 +129,7 @@ void main() {
         });
 
         test('returns notFound for a broken link', () async {
-          var linkpath = createPath('file_system_type_async_link_follow');
+          final linkpath = createPath('file_system_type_async_link_follow');
           await Link(linkpath).create('non-existent-path');
 
           expect(await nodeFileSystem.type(linkpath),
@@ -156,7 +154,8 @@ void main() {
         });
 
         test('returns link for a link to a file', () async {
-          var linkpath = createPath('file_system_type_async_file_nofollow.txt');
+          final linkpath =
+              createPath('file_system_type_async_file_nofollow.txt');
           await Link(linkpath).create(absolute('README.md'));
 
           expect(await nodeFileSystem.type(linkpath, followLinks: false),
@@ -164,7 +163,7 @@ void main() {
         });
 
         test('returns link for a broken link', () async {
-          var linkpath = createPath('file_system_type_async_link_nofollow');
+          final linkpath = createPath('file_system_type_async_link_nofollow');
           await Link(linkpath).create('non-existent-path');
 
           expect(await nodeFileSystem.type(linkpath, followLinks: false),
@@ -193,14 +192,14 @@ void main() {
         });
 
         test('returns file for a link to a file', () async {
-          var linkpath = createPath('file_system_type_sync_file_follow.txt');
+          final linkpath = createPath('file_system_type_sync_file_follow.txt');
           await Link(linkpath).create(absolute('README.md'));
 
           expect(nodeFileSystem.typeSync(linkpath), FileSystemEntityType.file);
         });
 
         test('returns directory for a link to a directory', () async {
-          var linkpath = createPath('file_system_type_sync_dir_follow');
+          final linkpath = createPath('file_system_type_sync_dir_follow');
           await Link(linkpath).create(absolute('lib'));
 
           expect(nodeFileSystem.typeSync(linkpath),
@@ -208,7 +207,7 @@ void main() {
         });
 
         test('returns notFound for a broken link', () async {
-          var linkpath = createPath('file_system_type_sync_link_follow');
+          final linkpath = createPath('file_system_type_sync_link_follow');
           await Link(linkpath).create('non-existent-path');
 
           expect(
@@ -233,7 +232,8 @@ void main() {
         });
 
         test('returns link for a link to a file', () async {
-          var linkpath = createPath('file_system_type_sync_file_nofollow.txt');
+          final linkpath =
+              createPath('file_system_type_sync_file_nofollow.txt');
           await Link(linkpath).create(absolute('README.md'));
 
           expect(nodeFileSystem.typeSync(linkpath, followLinks: false),
@@ -241,7 +241,7 @@ void main() {
         });
 
         test('returns link for a broken link', () async {
-          var linkpath = createPath('file_system_type_sync_link_nofollow');
+          final linkpath = createPath('file_system_type_sync_link_nofollow');
           await Link(linkpath).create('non-existent-path');
 
           expect(nodeFileSystem.typeSync(linkpath, followLinks: false),

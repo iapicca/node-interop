@@ -47,15 +47,17 @@ class NodeEntrypointBuilder implements Builder {
   final WebCompiler webCompiler;
   final List<String> dart2JsArgs;
 
-  // TODO: Remove --no-sound-null-safety after migrating to nnbd.
-  const NodeEntrypointBuilder(this.webCompiler,
-      {this.dart2JsArgs = const ['--no-sound-null-safety']});
+  //! TODO: Remove --no-sound-null-safety after migrating to nnbd.
+  const NodeEntrypointBuilder(
+    this.webCompiler, {
+    this.dart2JsArgs = const ['--no-sound-null-safety'],
+  });
 
   factory NodeEntrypointBuilder.fromOptions(BuilderOptions options) {
     validateOptions(
         options.config, _supportedOptions, 'build_node_compilers|entrypoint',
         deprecatedOptions: _deprecatedOptions);
-    var compilerOption = options.config[_compiler] as String ?? 'dartdevc';
+    final compilerOption = options.config[_compiler] as String? ?? 'dartdevc';
     WebCompiler compiler;
     switch (compilerOption) {
       case 'dartdevc':
@@ -73,11 +75,9 @@ class NodeEntrypointBuilder implements Builder {
       throw ArgumentError.value(options.config[_dart2jsArgs], _dart2jsArgs,
           'Expected a list for $_dart2jsArgs.');
     }
-    var dart2JsArgs = (options.config[_dart2jsArgs] as List)
-            ?.map((arg) => '$arg')
-            ?.toList() ??
-        const <String>[];
-
+    final dart2JsArgs = [
+      for (final arg in options.config[_dart2jsArgs]) '$arg'
+    ];
     return NodeEntrypointBuilder(compiler, dart2JsArgs: dart2JsArgs);
   }
 
@@ -93,8 +93,8 @@ class NodeEntrypointBuilder implements Builder {
 
   @override
   Future<void> build(BuildStep buildStep) async {
-    var dartEntrypointId = buildStep.inputId;
-    var isAppEntrypoint = await _isAppEntryPoint(dartEntrypointId, buildStep);
+    final dartEntrypointId = buildStep.inputId;
+    final isAppEntrypoint = await _isAppEntryPoint(dartEntrypointId, buildStep);
     if (!isAppEntrypoint) return;
     if (webCompiler == WebCompiler.DartDevc) {
       try {
@@ -115,7 +115,7 @@ Future<bool> _isAppEntryPoint(AssetId dartId, AssetReader reader) async {
   // Skip reporting errors here, dartdevc will report them later with nicer
   // formatting.
   // ignore: deprecated_member_use
-  var parsed = parseString(
+  final parsed = parseString(
       content: await reader.readAsString(dartId), throwIfDiagnostics: false);
 
   // Allow two or fewer arguments so that entrypoints intended for use with

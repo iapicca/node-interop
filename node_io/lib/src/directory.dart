@@ -32,7 +32,7 @@ import 'platform.dart';
 /// Create a new Directory object with a pathname to access the specified
 /// directory on the file system from your program.
 ///
-///     var myDir = Directory('myDir');
+///     final myDir = Directory('myDir');
 ///
 /// Most methods in this class occur in synchronous and asynchronous pairs,
 /// for example, [create] and [createSync].
@@ -71,7 +71,7 @@ import 'platform.dart';
 ///
 ///     void main() {
 ///       // Get the system temp directory.
-///       var systemTempDir = Directory.systemTemp;
+///       final systemTempDir = Directory.systemTemp;
 ///
 ///       // List directory contents, recursing into sub-directories,
 ///       // but not following symbolic links.
@@ -108,7 +108,7 @@ class Directory extends FileSystemEntity implements file.Directory {
   /// Gets the directory provided by the operating system for creating
   /// temporary files and directories in.
   /// The location of the system temp directory is platform-dependent,
-  /// and may be set by an environment variable.
+  /// and may be set by an environment finaliable.
   static file.Directory get systemTemp {
     return Directory(os.tmpdir());
   }
@@ -157,10 +157,14 @@ class Directory extends FileSystemEntity implements file.Directory {
         controller.addError(err);
         controller.close();
       } else {
-        for (var filePath in files) {
+        for (final filePath in files as Iterable<String>) {
           // Need to append the original path to build a proper path
-          filePath = join(path, filePath);
-          controller.add(_pathToFsEntity(filePath, followLinks));
+          controller.add(
+            _pathToFsEntity(
+              join(path, filePath),
+              followLinks,
+            ),
+          );
         }
         controller.close();
       }
@@ -185,7 +189,7 @@ class Directory extends FileSystemEntity implements file.Directory {
 
   /// Recursively list files in this directory.
   Stream<FileSystemEntity> _recursiveList(bool followLinks) async* {
-    await for (var entity in list(followLinks: followLinks)) {
+    await for (final entity in list(followLinks: followLinks)) {
       yield entity;
       if (entity is Directory) {
         yield* entity.list(recursive: true, followLinks: followLinks);
@@ -228,7 +232,7 @@ class Directory extends FileSystemEntity implements file.Directory {
       }
     }
 
-    var jsCallback = js.allowInterop(callback);
+    final jsCallback = js.allowInterop(callback);
 
     fs.mkdir(path, MkdirOptions(recursive: recursive), jsCallback);
     return completer.future;
@@ -263,7 +267,7 @@ class Directory extends FileSystemEntity implements file.Directory {
       }
     }
 
-    var jsCallback = js.allowInterop(callback);
+    final jsCallback = js.allowInterop(callback);
 
     fs.mkdtemp(fullPrefix, jsCallback);
     return completer.future;
@@ -291,7 +295,7 @@ class Directory extends FileSystemEntity implements file.Directory {
       {bool recursive = false, bool followLinks = true}) {
     Iterable<file.FileSystemEntity> list(String path) sync* {
       final files = fs.readdirSync(path);
-      for (var file in files) {
+      for (final file in files) {
         final filePath = join(path, file);
         final entity = _pathToFsEntity(filePath, followLinks);
         yield entity;

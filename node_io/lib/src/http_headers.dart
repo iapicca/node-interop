@@ -95,7 +95,7 @@ class RequestHttpHeaders extends HttpHeaders {
 /// Proxy to native JavaScript HTTP headers.
 abstract class HttpHeaders implements io.HttpHeaders {
   dynamic _getHeader(String name);
-  void _setHeader(String name, value);
+  void _setHeader(String name, Object? value);
   void _removeHeader(String name);
   Iterable<String> _getHeaderNames();
 
@@ -116,7 +116,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
 
   @override
   int get contentLength {
-    var value = _getHeader(io.HttpHeaders.contentLengthHeader);
+    final value = _getHeader(io.HttpHeaders.contentLengthHeader);
     if (value != null) return int.parse(value);
     return 0;
   }
@@ -131,7 +131,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
     if (_contentType != null) return _contentType;
     String? value = _getHeader(io.HttpHeaders.contentTypeHeader);
     if (value == null || value.isEmpty) return null;
-    var types = value.split(',');
+    final types = value.split(',');
     _contentType = io.ContentType.parse(types.first);
     return _contentType;
   }
@@ -187,9 +187,8 @@ abstract class HttpHeaders implements io.HttpHeaders {
   @override
   set host(String? host) {
     var hostAndPort = host;
-    var _port = port;
-    if (_port != null) {
-      hostAndPort = '$host:$_port';
+    if (port != null) {
+      hostAndPort = '$host:$port';
     }
     _setHeader(io.HttpHeaders.hostHeader, hostAndPort);
   }
@@ -198,20 +197,17 @@ abstract class HttpHeaders implements io.HttpHeaders {
   int? get port {
     String? value = _getHeader(io.HttpHeaders.hostHeader);
     if (value != null) {
-      var parts = value.split(':');
+      final parts = value.split(':');
       if (parts.length == 2) return int.parse(parts.last);
     }
     return null;
   }
 
   @override
-  set port(int? value) {
-    var hostAndPort = host;
-    if (value != null) {
-      hostAndPort = '$host:$value';
-    }
-    _setHeader(io.HttpHeaders.hostHeader, hostAndPort);
-  }
+  set port(int? value) => _setHeader(
+        io.HttpHeaders.hostHeader,
+        value == null ? host : '$host:$value',
+      );
 
   @override
   DateTime? get ifModifiedSince {
@@ -242,13 +238,13 @@ abstract class HttpHeaders implements io.HttpHeaders {
 
   @override
   bool get persistentConnection {
-    var connection = _getHeader(io.HttpHeaders.connectionHeader);
+    final connection = _getHeader(io.HttpHeaders.connectionHeader);
     return (connection == 'keep-alive');
   }
 
   @override
   set persistentConnection(bool persistentConnection) {
-    var value = persistentConnection ? 'keep-alive' : 'close';
+    final value = persistentConnection ? 'keep-alive' : 'close';
     _setHeader(io.HttpHeaders.connectionHeader, value);
   }
 
@@ -257,7 +253,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
   @override
   List<String>? operator [](String name) {
     name = name.toLowerCase();
-    var value = _getHeader(name);
+    final value = _getHeader(name);
     if (value != null) {
       if (value is String) {
         return _isMultiValue(name) ? value.split(',') : [value];
@@ -288,7 +284,7 @@ abstract class HttpHeaders implements io.HttpHeaders {
       throw UnsupportedError('HttpHeaders.add(preserveHeaderCase: true)');
     } else {
       final existingValues = this[name];
-      var values = existingValues != null ? List.from(existingValues) : [];
+      final values = existingValues != null ? List.from(existingValues) : [];
       values.add(value.toString());
       _setHeader(name, values);
     }
@@ -296,15 +292,15 @@ abstract class HttpHeaders implements io.HttpHeaders {
 
   @override
   void clear() {
-    var names = _getHeaderNames();
-    for (var name in names) {
+    final names = _getHeaderNames();
+    for (final name in names) {
       _removeHeader(name);
     }
   }
 
   @override
   void forEach(void Function(String name, List<String> values) f) {
-    var names = _getHeaderNames();
+    final names = _getHeaderNames();
     names.forEach((String name) {
       f(name, this[name]!);
     });

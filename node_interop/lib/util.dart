@@ -35,7 +35,7 @@ abstract class Util {
 /// `Map` instances. Both arrays and objects are traversed recursively
 /// converting nested values.
 ///
-/// Converting JS objects always results in a `Map<String, dynamic>` meaning
+/// Converting JS objects always results in a `Map<String, Object?>` meaning
 /// even if original object had an integer key set, it will be converted into
 /// a `String`. This is different from JS semantics where you are allowed to
 /// access a key by passing its int value, e.g. `obj[1]` would work in JS,
@@ -52,9 +52,9 @@ T dartify<T>(dynamic jsObject) {
     return jsObject.map(dartify).toList() as T;
   }
 
-  var keys = objectKeys(jsObject);
-  var result = <String, dynamic>{};
-  for (var key in keys) {
+  final keys = objectKeys(jsObject);
+  final result = <String, dynamic>{};
+  for (final key in keys) {
     result[key] = dartify(js_util.getProperty(jsObject, key));
   }
 
@@ -91,7 +91,7 @@ bool _isBasicType(value) {
 /// See also:
 ///   - [futureToPromise]
 Future<T> promiseToFuture<T>(Promise promise) {
-  var completer = Completer<T>.sync();
+  final completer = Completer<T>.sync();
   promise.then(allowInterop((value) {
     completer.complete(value);
   }), allowInterop((error) {
@@ -126,7 +126,7 @@ void Function(Object?, T) callbackToCompleter<T>(Completer<T> completer) {
 /// Invokes a zero-argument Node.js-style asynchronous function and encapsulates
 /// the result in a `Future`.
 Future<T> invokeAsync0<T>(void Function(void Function(Object?, T)) function) {
-  var completer = Completer<T>();
+  final completer = Completer<T>();
   function(callbackToCompleter(completer));
   return completer.future;
 }
@@ -135,7 +135,7 @@ Future<T> invokeAsync0<T>(void Function(void Function(Object?, T)) function) {
 /// encapsulates the result in a `Future`.
 Future<T> invokeAsync1<S, T>(
     void Function(S, void Function(Object?, T)) function, S arg1) {
-  var completer = Completer<T>();
+  final completer = Completer<T>();
   function(arg1, callbackToCompleter(completer));
   return completer.future;
 }

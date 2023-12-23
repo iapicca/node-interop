@@ -36,13 +36,13 @@ class Link extends FileSystemEntity implements file.Link {
 
   @override
   Future<bool> exists() async {
-    var stat = await FileStat.stat(path);
+    final stat = await FileStat.stat(path);
     return stat.type == io.FileSystemEntityType.link;
   }
 
   @override
   bool existsSync() {
-    var stat = FileStat.statSync(path);
+    final stat = FileStat.statSync(path);
     return stat.type == io.FileSystemEntityType.link;
   }
 

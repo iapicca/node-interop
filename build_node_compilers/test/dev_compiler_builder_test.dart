@@ -13,9 +13,9 @@ import 'package:test/test.dart';
 import 'util.dart';
 
 void main() {
-  Map<String, dynamic> assets;
-
   group('error free project', () {
+    late final Map<String, Object> assets;
+
     setUp(() async {
       assets = {
         'build_modules|lib/src/analysis_options.default.yaml': '',
@@ -33,17 +33,30 @@ void main() {
       };
 
       // Set up all the other required inputs for this test.
-      await testBuilderAndCollectAssets(const ModuleLibraryBuilder(), assets);
-      await testBuilderAndCollectAssets(MetaModuleBuilder(ddcPlatform), assets);
       await testBuilderAndCollectAssets(
-          MetaModuleCleanBuilder(ddcPlatform), assets);
-      await testBuilderAndCollectAssets(ModuleBuilder(ddcPlatform), assets);
+        const ModuleLibraryBuilder(),
+        assets,
+      );
       await testBuilderAndCollectAssets(
-          ddcKernelBuilder(BuilderOptions({})), assets);
+        MetaModuleBuilder(ddcPlatform),
+        assets,
+      );
+      await testBuilderAndCollectAssets(
+        MetaModuleCleanBuilder(ddcPlatform),
+        assets,
+      );
+      await testBuilderAndCollectAssets(
+        ModuleBuilder(ddcPlatform),
+        assets,
+      );
+      await testBuilderAndCollectAssets(
+        ddcKernelBuilder(BuilderOptions({})),
+        assets,
+      );
     });
 
     test('can compile ddc modules under lib and web', () async {
-      var expectedOutputs = {
+      final expectedOutputs = {
         'b|lib/b$jsModuleExtension': decodedMatches(contains('world')),
         'b|lib/b$jsSourceMapExtension': decodedMatches(contains('b.dart')),
         'a|lib/a$jsModuleExtension': decodedMatches(contains('hello')),
@@ -59,6 +72,8 @@ void main() {
 
   group('projects with errors due to', () {
     group('invalid assignements', () {
+      late final Map<String, Object> assets;
+
       setUp(() async {
         assets = {
           'build_modules|lib/src/analysis_options.default.yaml': '',
@@ -66,22 +81,34 @@ void main() {
         };
 
         // Set up all the other required inputs for this test.
-        await testBuilderAndCollectAssets(const ModuleLibraryBuilder(), assets);
         await testBuilderAndCollectAssets(
-            MetaModuleBuilder(ddcPlatform), assets);
+          const ModuleLibraryBuilder(),
+          assets,
+        );
         await testBuilderAndCollectAssets(
-            MetaModuleCleanBuilder(ddcPlatform), assets);
-        await testBuilderAndCollectAssets(ModuleBuilder(ddcPlatform), assets);
+          MetaModuleBuilder(ddcPlatform),
+          assets,
+        );
         await testBuilderAndCollectAssets(
-            ddcKernelBuilder(BuilderOptions({})), assets);
+          MetaModuleCleanBuilder(ddcPlatform),
+          assets,
+        );
+        await testBuilderAndCollectAssets(
+          ModuleBuilder(ddcPlatform),
+          assets,
+        );
+        await testBuilderAndCollectAssets(
+          ddcKernelBuilder(BuilderOptions({})),
+          assets,
+        );
       });
 
       test('reports useful messages', () async {
-        var expectedOutputs = {
+        final expectedOutputs = {
           'a|web/index$jsModuleErrorsExtension': decodedMatches(
               allOf(contains('String'), contains('assigned'), contains('int'))),
         };
-        var logs = <LogRecord>[];
+        final logs = <LogRecord>[];
         await testBuilder(DevCompilerBuilder(platform: ddcPlatform), assets,
             outputs: expectedOutputs, onLog: logs.add);
         expect(
@@ -95,6 +122,8 @@ void main() {
     });
 
     group('invalid imports', () {
+      late final Map<String, Object> assets;
+
       setUp(() async {
         assets = {
           'build_modules|lib/src/analysis_options.default.yaml': '',
@@ -102,20 +131,30 @@ void main() {
         };
 
         // Set up all the other required inputs for this test.
-        await testBuilderAndCollectAssets(const ModuleLibraryBuilder(), assets);
         await testBuilderAndCollectAssets(
-            MetaModuleBuilder(ddcPlatform), assets);
+          const ModuleLibraryBuilder(),
+          assets,
+        );
         await testBuilderAndCollectAssets(
-            MetaModuleCleanBuilder(ddcPlatform), assets);
-        await testBuilderAndCollectAssets(ModuleBuilder(ddcPlatform), assets);
+          MetaModuleBuilder(ddcPlatform),
+          assets,
+        );
+        await testBuilderAndCollectAssets(
+          MetaModuleCleanBuilder(ddcPlatform),
+          assets,
+        );
+        await testBuilderAndCollectAssets(
+          ModuleBuilder(ddcPlatform),
+          assets,
+        );
       });
 
       test('reports useful messages', () async {
-        var expectedOutputs = {
+        final expectedOutputs = {
           'a|web/index$jsModuleErrorsExtension': decodedMatches(
               contains('Unable to find modules for some sources')),
         };
-        var logs = <LogRecord>[];
+        final logs = <LogRecord>[];
         await testBuilder(DevCompilerBuilder(platform: ddcPlatform), assets,
             outputs: expectedOutputs, onLog: logs.add);
         expect(

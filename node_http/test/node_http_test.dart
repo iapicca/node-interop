@@ -2,29 +2,33 @@
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
 @TestOn('node')
-library http_test;
+// library http_test;
 
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:node_http/node_http.dart' as http;
-import 'package:node_io/node_io.dart';
+import 'package:node_http/node_http.dart' as node_http;
+import 'package:node_io/node_io.dart' as node_io;
 import 'package:test/test.dart';
 
 void main() {
   group('HTTP client', () {
-    HttpServer server;
+    late final HttpServer server;
 
     setUpAll(() async {
-      server = await HttpServer.bind('127.0.0.1', 8181);
+      server = await node_io.HttpServer.bind('127.0.0.1', 8181);
       server.listen((request) async {
         if (request.uri.path == '/test') {
           final body = await request.map(utf8.decode).join();
-          request.response.headers.contentType = ContentType.text;
-          request.response.headers.set('X-Foo', 'bar');
-          request.response.headers.set('set-cookie',
-              ['JSESSIONID=verylongid; Path=/somepath; HttpOnly']);
+          request.response.headers
+            ..contentType = ContentType.text
+            ..set('X-Foo', 'bar')
+            ..set(
+              'set-cookie',
+              ['JSESSIONID=verylongid; Path=/somepath; HttpOnly'],
+            );
           request.response.statusCode = HttpStatus.ok;
-          if (body != null && body.isNotEmpty) {
+          if (body.isNotEmpty) {
             request.response.write(body);
           } else {
             request.response.write('ok');
@@ -32,13 +36,18 @@ void main() {
           await request.response.close();
         } else if (request.uri.path == '/redirect-to-test') {
           request.response.statusCode = HttpStatus.movedPermanently;
-          request.response.headers
-              .set(HttpHeaders.locationHeader, 'http://127.0.0.1:8181/test');
+          request.response.headers.set(
+            HttpHeaders.locationHeader,
+            'http://127.0.0.1:8181/test',
+          );
           await request.response.close();
         } else if (request.uri.path == '/redirect-loop') {
-          request.response.statusCode = HttpStatus.movedPermanently;
-          request.response.headers.set(HttpHeaders.locationHeader,
-              'http://127.0.0.1:8181/redirect-loop');
+          request.response
+            ..statusCode = HttpStatus.movedPermanently
+            ..headers.set(
+              HttpHeaders.locationHeader,
+              'http://127.0.0.1:8181/redirect-loop',
+            );
           await request.response.close();
         }
       });
@@ -49,21 +58,27 @@ void main() {
     });
 
     test('make get request', () async {
-      var client = http.NodeClient();
-      var response = await client.get('http://127.0.0.1:8181/test');
+      final client = node_http.NodeClient();
+      final response = await client.get(
+        Uri.parse('http://127.0.0.1:8181/test'),
+      );
       expect(response.statusCode, 200);
       expect(response.contentLength, greaterThan(0));
       expect(response.body, equals('ok'));
       expect(response.headers, contains('content-type'));
-      expect(response.headers['set-cookie'],
-          'JSESSIONID=verylongid; Path=/somepath; HttpOnly');
+      expect(
+        response.headers['set-cookie'],
+        'JSESSIONID=verylongid; Path=/somepath; HttpOnly',
+      );
       client.close();
     });
 
     test('make post request with a body', () async {
-      var client = http.NodeClient();
-      var response =
-          await client.post('http://127.0.0.1:8181/test', body: 'hello');
+      final client = node_http.NodeClient();
+      final response = await client.post(
+        Uri.parse('http://127.0.0.1:8181/test'),
+        body: 'hello',
+      );
       expect(response.statusCode, 200);
       expect(response.contentLength, greaterThan(0));
       expect(response.body, equals('hello'));
@@ -71,7 +86,7 @@ void main() {
     });
 
     test('make get request with library-level get method', () async {
-      var response = await http.get('http://127.0.0.1:8181/test');
+      final response = await node_http.get('http://127.0.0.1:8181/test');
       expect(response.statusCode, 200);
       expect(response.contentLength, greaterThan(0));
       expect(response.body, equals('ok'));
@@ -81,8 +96,10 @@ void main() {
     });
 
     test('follows redirects', () async {
-      var client = http.NodeClient();
-      var response = await client.get('http://127.0.0.1:8181/redirect-to-test');
+      final client = node_http.NodeClient();
+      final response = await client.get(
+        Uri.parse('http://127.0.0.1:8181/redirect-to-test'),
+      );
       expect(response.statusCode, 200);
       expect(response.contentLength, greaterThan(0));
       expect(response.body, equals('ok'));
@@ -90,15 +107,17 @@ void main() {
     });
 
     test('fails for redirect loops', () async {
-      var client = http.NodeClient();
-      var error;
+      final client = node_http.NodeClient();
+      late final node_http.ClientException error;
       try {
-        await client.get('http://127.0.0.1:8181/redirect-loop');
-      } catch (err) {
-        error = err;
+        await client.get(
+          Uri.parse('http://127.0.0.1:8181/redirect-loop'),
+        );
+      } on node_http.ClientException catch (e) {
+        error = e;
       }
       expect(error, isNotNull);
-      http.ClientException exception = error;
+      node_http.ClientException exception = error;
       expect(exception.message, 'Redirect loop detected.');
       client.close();
     });

@@ -23,7 +23,7 @@ void main() {
     worker.on('message',
         allowInterop(Zone.current.bindUnaryCallback(expectAsync1((message) {
       expect(message, equals(13));
-      var result = worker.terminate();
+      final result = worker.terminate();
       expect(promiseToFuture(result), completes);
     }))));
   });

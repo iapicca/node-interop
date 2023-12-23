@@ -9,7 +9,7 @@ import 'package:node_interop/util.dart';
 /// Information about the environment in which the current program is running.
 ///
 /// Platform provides information such as the operating system,
-/// the hostname of the computer, the value of environment variables,
+/// the hostname of the computer, the value of environment finaliables,
 /// the path to the running program,
 /// and so on.
 ///
@@ -22,23 +22,23 @@ import 'package:node_interop/util.dart';
 ///
 ///     void main() {
 ///       // Get the URI of the script being run.
-///       var uri = Platform.script;
+///       final uri = Platform.script;
 ///       // Convert the URI to a path.
-///       var path = uri.toFilePath();
+///       final path = uri.toFilePath();
 ///     }
 ///
-/// ## Get the value of an environment variable
+/// ## Get the value of an environment finaliable
 ///
 /// The [environment] getter returns a the names and values of environment
-/// variables in a [Map] that contains key-value pairs of strings. The Map is
+/// finaliables in a [Map] that contains key-value pairs of strings. The Map is
 /// unmodifiable. This sample shows how to get the value of the `PATH`
-/// environment variable.
+/// environment finaliable.
 ///
 ///     import 'dart:io' show Platform;
 ///
 ///     void main() {
-///       Map<String, String> envVars = Platform.environment;
-///       print(envVars['PATH']);
+///       Map<String, String> envfinals = Platform.environment;
+///       print(envfinals['PATH']);
 ///     }
 ///
 /// ## Determine the OS
@@ -115,7 +115,7 @@ abstract class Platform {
   ///
   /// The map is unmodifiable,
   /// and its content is retrieved from the operating system on its first use.
-  /// Environment variables on Windows are case-insensitive,
+  /// Environment finaliables on Windows are case-insensitive,
   /// so on Windows the map is case-insensitive and will convert
   /// all keys to upper case.
   /// On other platforms, keys can be distinguished by case.

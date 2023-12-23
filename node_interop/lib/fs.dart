@@ -254,7 +254,7 @@ abstract class WriteStreamOptions {
   });
 }
 
-/// Options for various `fs` APIs.
+/// Options for finalious `fs` APIs.
 ///
 /// Some options may not be relevant for all functions that accept this object.
 @JS()

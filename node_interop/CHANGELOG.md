@@ -1,3 +1,7 @@
+## 2.1.2
+
+- Update dependencies for Dart 3.2.0
+
 ## 2.1.1
 
 - Correctly mark the type of the `undefined` getter as `Null`.
@@ -8,7 +12,7 @@
 
 ## 2.0.2
 
-- Various `fs` APIs now accept options.
+- finalious `fs` APIs now accept options.
 
   - `fs.appendFile`, `fs.mkdtemp`, `fs.readdir`, `fs.readlink`, and
     `fs.realpath`, and `fs.writeFile` accept a `FileOptions` object.
@@ -118,7 +122,7 @@ Non-breaking changes may be published to the stable track periodically.
 ## 1.0.0-dev.5.0
 
 - Fixed: strong mode issue in `dartify` utility function when converting plain
-  JS objects to Dart `Map`. Returned map is now of type `Map<String, dynamic>`
+  JS objects to Dart `Map`. Returned map is now of type `Map<String, Object?>`
   instead of `Map`.
 
 ## 1.0.0-dev.4.0
@@ -203,7 +207,7 @@ Non-breaking changes may be published to the stable track periodically.
 
 - Made `Promise<T>` a generic type. Also added definition of `Thenable`.
 - `onRejected` in `Promise.then` is now optional.
-- Added explicit type to `node` variable.
+- Added explicit type to `node` finaliable.
 
 ## 0.1.0-beta.3
 

@@ -49,7 +49,7 @@ class NodeFileSystem extends f.FileSystem {
 
   @override
   Future<bool> identical(String path1, String path2) async {
-    var stats = await Future.wait(
+    final stats = await Future.wait(
         [invokeAsync1(fs.lstat, path1), invokeAsync1(fs.lstat, path2)],
         eagerError: true);
 
@@ -58,8 +58,8 @@ class NodeFileSystem extends f.FileSystem {
 
   @override
   bool identicalSync(String path1, String path2) {
-    var stat1 = fs.lstatSync(path1);
-    var stat2 = fs.lstatSync(path2);
+    final stat1 = fs.lstatSync(path1);
+    final stat2 = fs.lstatSync(path2);
     return stat1.ino == stat2.ino && stat1.dev == stat2.dev;
   }
 

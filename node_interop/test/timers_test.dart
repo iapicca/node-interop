@@ -11,7 +11,7 @@ import 'package:test/test.dart';
 void main() {
   group('Timers', () {
     test('setImmediate', () async {
-      var buffer = StringBuffer();
+      final buffer = StringBuffer();
 
       Future<void> writesToBuffer(StringBuffer buffer) async {
         buffer.writeln('before');

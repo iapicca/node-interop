@@ -23,7 +23,7 @@ HTTP? _http;
 ///
 /// This is equivalent of Node's `new http.Agent([options])`.
 HttpAgent createHttpAgent([HttpAgentOptions? options]) {
-  var args = (options == null) ? [] : [options];
+  final args = (options == null) ? [] : [options];
   return callConstructor(http.Agent, args);
 }
 

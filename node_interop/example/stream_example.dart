@@ -13,10 +13,10 @@ import 'package:node_interop/stream.dart';
 /// (string "Hello world") is sent as a result of a [Future] and printed
 /// to stdout.
 void main() {
-  var buffer = StringBuffer();
-  var readable = createStringReadStream();
-  var writable = createStringBufferStream(buffer);
-  var completer = Completer<String>();
+  final buffer = StringBuffer();
+  final readable = createStringReadStream();
+  final writable = createStringBufferStream(buffer);
+  final completer = Completer<String>();
 
   readable.pipe(writable).on('finish', allowInterop(() {
     completer.complete(buffer.toString());

@@ -52,7 +52,7 @@ abstract class FileSystemEntity implements file.FileSystemEntity {
     }
     // Ignore trailing slashes.
     // All non-trivial cases have separators between two non-separators.
-    var pos = path.lastIndexOf(_parentRegExp);
+    final pos = path.lastIndexOf(_parentRegExp);
     if (pos > rootEnd) {
       return path.substring(0, pos + 1);
     } else if (rootEnd > -1) {
@@ -67,7 +67,7 @@ abstract class FileSystemEntity implements file.FileSystemEntity {
 
   @override
   Future<String> resolveSymbolicLinks() {
-    var completer = Completer<String>();
+    final completer = Completer<String>();
     void callback(Object? err, String resolvedPath) {
       if (err == null) {
         completer.complete(resolvedPath);
@@ -76,7 +76,7 @@ abstract class FileSystemEntity implements file.FileSystemEntity {
       }
     }
 
-    var jsCallback = js.allowInterop(callback);
+    final jsCallback = js.allowInterop(callback);
 
     fs.realpath(path, jsCallback);
     return completer.future;
@@ -164,7 +164,7 @@ class FileStat implements io.FileStat {
   /// [FileStat] object with `.type` set to FileSystemEntityType.notFound and
   /// the other fields invalid.
   static Future<FileStat> stat(String path) {
-    var completer = Completer<FileStat>();
+    final completer = Completer<FileStat>();
 
     // stats has to be an optional param despite what the documentation says...
     void callback(err, [stats]) {
@@ -175,7 +175,7 @@ class FileStat implements io.FileStat {
       }
     }
 
-    var jsCallback = js.allowInterop(callback);
+    final jsCallback = js.allowInterop(callback);
     fs.lstat(path, jsCallback);
     return completer.future;
   }
@@ -195,9 +195,18 @@ class FileStat implements io.FileStat {
 
   @override
   String modeString() {
-    var permissions = mode & 0xFFF;
-    var codes = const ['---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx'];
-    var result = [];
+    final permissions = mode & 0xFFF;
+    final codes = const [
+      '---',
+      '--x',
+      '-w-',
+      '-wx',
+      'r--',
+      'r-x',
+      'rw-',
+      'rwx'
+    ];
+    final result = [];
     if ((permissions & 0x800) != 0) result.add('(suid) ');
     if ((permissions & 0x400) != 0) result.add('(guid) ');
     if ((permissions & 0x200) != 0) result.add('(sticky) ');

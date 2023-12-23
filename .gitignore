@@ -3,18 +3,9 @@
 .pub/
 .dart_tool/
 build/
-# Remove the following pattern if you wish to check in your lock file
-pubspec.lock
-
-# Directory created by dartdoc
-doc/api/
-
-# VSCode
-.vscode
-
-# Intellij/WebStorm
 .idea/
 
-# Node
-package-lock.json
-node_modules/
+
+#melos
+melos_*.iml
+*/pubspec_overrides.*

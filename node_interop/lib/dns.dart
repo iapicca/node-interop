@@ -22,7 +22,7 @@ DNS? _dns;
 ///     import 'package:node_interop/dns.dart';
 ///
 ///     void main() {
-///       var options = new DNSLookupOptions(all: true, verbatim: true);
+///       final options = new DNSLookupOptions(all: true, verbatim: true);
 ///       void lookupHandler(error, List<DNSAddress> addresses) {
 ///         console.log(addresses);
 ///       }

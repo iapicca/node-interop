@@ -48,11 +48,11 @@ import 'path.dart';
 ///     }
 String createFile(String name, String contents) {
   String script = process.argv[1];
-  var segments = script.split(path.sep);
+  final segments = script.split(path.sep);
   segments
     ..removeLast()
     ..add(name);
-  var jsFilepath = path.sep + segments.join(path.sep);
+  final jsFilepath = path.sep + segments.join(path.sep);
   fs.writeFileSync(jsFilepath, contents);
   return jsFilepath;
 }

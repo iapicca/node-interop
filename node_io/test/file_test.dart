@@ -1,8 +1,6 @@
 // Copyright (c) 2017, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-// @dart=2.9
-
 @TestOn('node')
 library file_test;
 
@@ -17,8 +15,8 @@ import 'fs_utils.dart';
 void main() {
   group('File', () {
     test('existsSync', () async {
-      var path = createFile('existsSync.txt', 'existsSync');
-      var file = File(path);
+      final path = createFile('existsSync.txt', 'existsSync');
+      final file = File(path);
       expect(file.existsSync(), isTrue);
     });
 
@@ -44,48 +42,49 @@ void main() {
     });
 
     test('readAsBytes', () async {
-      var path =
+      final path =
           createFile('readAsBytes.txt', String.fromCharCodes([1, 2, 3, 4, 5]));
-      var file = File(path);
+      final file = File(path);
       expect(file.existsSync(), isTrue);
-      var data = await file.readAsBytes();
+      final data = await file.readAsBytes();
       expect(data, [1, 2, 3, 4, 5]);
     });
 
     test('readAsLines', () async {
-      var path = createFile('readAsLines.txt', 'hello world\nsecond line');
-      var file = File(path);
-      var lines = await file.readAsLines();
+      final path = createFile('readAsLines.txt', 'hello world\nsecond line');
+      final file = File(path);
+      final lines = await file.readAsLines();
       expect(lines, ['hello world', 'second line']);
     });
 
     test('readAsLinesSync', () {
-      var path = createFile('readAsLinesSync.txt', 'hello world\nsecond line');
-      var file = File(path);
-      var lines = file.readAsLinesSync();
+      final path =
+          createFile('readAsLinesSync.txt', 'hello world\nsecond line');
+      final file = File(path);
+      final lines = file.readAsLinesSync();
       expect(lines, ['hello world', 'second line']);
     });
 
     test('readAsBytesSync', () async {
-      var path = createFile(
+      final path = createFile(
           'readAsBytesSync.txt', String.fromCharCodes([1, 2, 3, 4, 5]));
-      var file = File(path);
+      final file = File(path);
       expect(file.existsSync(), isTrue);
-      var data = file.readAsBytesSync();
+      final data = file.readAsBytesSync();
       expect(data, [1, 2, 3, 4, 5]);
     });
 
     test('readAsStringSync', () async {
-      var path = createFile('readAsStringSync.txt', 'hello world');
-      var file = File(path);
+      final path = createFile('readAsStringSync.txt', 'hello world');
+      final file = File(path);
       expect(file.existsSync(), isTrue);
-      var data = file.readAsStringSync();
+      final data = file.readAsStringSync();
       expect(data, 'hello world');
     });
 
     test('renameSync', () async {
-      var path = createFile('renameSync.txt', 'hello world');
-      var file = File(path);
+      final path = createFile('renameSync.txt', 'hello world');
+      final file = File(path);
       expect(file.existsSync(), isTrue);
       final renamedPath =
           file.path.replaceFirst('renameSync.txt', 'renamedSync.txt');
@@ -96,8 +95,9 @@ void main() {
     });
 
     test('copy', () async {
-      var path = createFile('copy.txt', String.fromCharCodes([1, 2, 3, 4, 5]));
-      var file = File(path);
+      final path =
+          createFile('copy.txt', String.fromCharCodes([1, 2, 3, 4, 5]));
+      final file = File(path);
       final copyPath = path.replaceFirst('copy.txt', 'copy_copy.txt');
       final result = await file.copy(copyPath);
       expect(result, const TypeMatcher<File>());
@@ -106,9 +106,9 @@ void main() {
     });
 
     test('copySync', () async {
-      var path =
+      final path =
           createFile('copy_sync.txt', String.fromCharCodes([1, 2, 3, 4, 5]));
-      var file = File(path);
+      final file = File(path);
       final copyPath = path.replaceFirst('copy_sync.txt', 'copy_sync_copy.txt');
       final result = await file.copy(copyPath);
       expect(result, const TypeMatcher<File>());
@@ -117,16 +117,16 @@ void main() {
     });
 
     test('delete', () async {
-      var path =
+      final path =
           createFile('delete.txt', String.fromCharCodes([1, 2, 3, 4, 5]));
-      var file = File(path);
+      final file = File(path);
       expect(await file.exists(), isTrue);
       await file.delete();
       expect(await file.exists(), isFalse);
     });
 
     test('create', () async {
-      var file = File('create.txt');
+      final file = File('create.txt');
       try {
         await file.delete();
       } catch (_) {}
@@ -139,7 +139,7 @@ void main() {
     });
 
     test('create recursive', () async {
-      var file = File('directory/create.txt');
+      final file = File('directory/create.txt');
       try {
         await file.delete();
       } catch (_) {}
@@ -185,7 +185,7 @@ void main() {
     });
 
     test('read_write_bytes', () async {
-      var file = File('as_bytes.bin');
+      final file = File('as_bytes.bin');
       final bytes = <int>[0, 1, 2, 3];
 
       await file.writeAsBytes(bytes, flush: true);
@@ -227,7 +227,7 @@ void main() {
 
     test('add_bytes', () async {
       final file = File('add_bytes.bin');
-      var sink = file.openWrite(mode: FileMode.write);
+      final sink = file.openWrite(mode: FileMode.write);
       sink.add([1, 2, 3, 4]);
       sink.add('test'.codeUnits);
       await sink.flush();
@@ -240,8 +240,8 @@ void main() {
     });
 
     test('rename', () async {
-      var src = File('src');
-      var dst = File('dst');
+      final src = File('src');
+      final dst = File('dst');
       try {
         await src.delete();
       } catch (_) {}
@@ -257,8 +257,8 @@ void main() {
     });
 
     test('setLastAccessed', () async {
-      var path = createFile('setLastAccessed.txt', 'file');
-      var file = File(path);
+      final path = createFile('setLastAccessed.txt', 'file');
+      final file = File(path);
       final atime = file.statSync().accessed;
       await Future.delayed(Duration(seconds: 1));
       final now = DateTime.now();
@@ -267,8 +267,8 @@ void main() {
     });
 
     test('setLastAccessedSync', () async {
-      var path = createFile('setLastAccessed.txt', 'file');
-      var file = File(path);
+      final path = createFile('setLastAccessed.txt', 'file');
+      final file = File(path);
       final atime = file.statSync().accessed;
       await Future.delayed(Duration(seconds: 1));
       final now = DateTime.now();
@@ -277,24 +277,24 @@ void main() {
     });
 
     test('writeAsBytesSync', () async {
-      var path = createPath('writeAsBytesSync.txt');
-      var file = File(path);
+      final path = createPath('writeAsBytesSync.txt');
+      final file = File(path);
       if (file.existsSync()) file.deleteSync();
 
       file.writeAsBytesSync([1, 2, 3, 4, 5]);
       expect(file.existsSync(), isTrue);
-      var data = file.readAsBytesSync();
+      final data = file.readAsBytesSync();
       expect(data, [1, 2, 3, 4, 5]);
     });
   });
 
   group('RandomAccessFile', () {
     test('read', () async {
-      var path = createFile('setLastAccessed.txt', 'file');
-      var file = File(path);
-      var fd = await file.open();
-      var result = await fd.read(4);
-      var content = String.fromCharCodes(result);
+      final path = createFile('setLastAccessed.txt', 'file');
+      final file = File(path);
+      final fd = await file.open();
+      final result = await fd.read(4);
+      final content = String.fromCharCodes(result);
       expect(content, 'file');
       expect(await fd.position(), 4);
       await fd.close();

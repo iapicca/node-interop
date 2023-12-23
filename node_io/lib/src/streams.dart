@@ -60,7 +60,7 @@ class ReadableStream<T> extends Stream<T> implements HasReadable {
       {Function? onError, void Function()? onDone, bool? cancelOnError}) {
     nativeInstance.on('data', allowInterop((chunk) {
       assert(chunk != null);
-      var data = _convert(chunk);
+      final data = _convert(chunk);
       _controller.add(data);
     }));
     nativeInstance.on('end', allowInterop(() {
@@ -106,7 +106,7 @@ class WritableStream<S> implements StreamSink<S> {
 
   /// Writes [data] to nativeStream.
   void _write(S data) {
-    var completer = Completer();
+    final completer = Completer();
     void _flush([JsError? error]) {
       if (completer.isCompleted) return;
       if (error != null) {
@@ -116,8 +116,8 @@ class WritableStream<S> implements StreamSink<S> {
       }
     }
 
-    var chunk = _convert(data);
-    var isFlushed = nativeInstance.write(chunk, allowInterop(_flush));
+    final chunk = _convert(data);
+    final isFlushed = nativeInstance.write(chunk, allowInterop(_flush));
     if (!isFlushed) {
       // Keep track of the latest unflushed chunk of data.
       _drainCompleter = completer;
@@ -195,7 +195,7 @@ class NodeIOSink extends WritableStream<List<int>> implements IOSink {
 
   @override
   void writeAll(Iterable objects, [String separator = '']) {
-    var data = objects.map((obj) => obj.toString()).join(separator);
+    final data = objects.map((obj) => obj.toString()).join(separator);
     _write(encoding.encode(data));
   }
 

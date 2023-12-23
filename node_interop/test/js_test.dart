@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 void main() {
   group('js', () {
     test('undefined', () {
-      var value = returnsUndefined();
+      final value = returnsUndefined();
       expect(value, undefined);
     });
 

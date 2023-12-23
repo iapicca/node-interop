@@ -30,11 +30,11 @@ void main() {
 /// Calculates value of π according to specified [accuracy].
 double slowPi(int accuracy) {
   var pi = 4.0;
-  var top = 4.0;
+  final top = 4.0;
   var bottom = 3.0;
   var add = false;
   for (var i = 0; i < accuracy; i++) {
-    var value = top / bottom;
+    final value = top / bottom;
     pi = add ? pi + value : pi - value;
     add = !add;
     bottom += 2;

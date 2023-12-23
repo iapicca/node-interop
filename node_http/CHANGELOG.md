@@ -1,3 +1,7 @@
+## 1.0.2
+
+- Update dependencies for Dart 3.2.0
+
 ## 1.0.1
 
 - Fixed: some headers could be missing for certain request types (#77)

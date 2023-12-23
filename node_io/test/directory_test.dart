@@ -1,8 +1,6 @@
 // Copyright (c) 2017, Anatoly Pulyaevskiy. All rights reserved. Use of this source code
 // is governed by a BSD-style license that can be found in the LICENSE file.
 
-// @dart=2.9
-
 @TestOn('node')
 library directory_test;
 
@@ -43,7 +41,7 @@ void main() {
 
     bool _listContainsPath(List<FileSystemEntity> entities, String path) {
       var contains = false;
-      for (var entity in entities) {
+      for (final entity in entities) {
         if (entity.path.endsWith(path)) {
           contains = true;
           break;
@@ -67,7 +65,7 @@ void main() {
     });
 
     test('list recursive', () async {
-      var list = await Directory.current.list(recursive: true).toList();
+      final list = await Directory.current.list(recursive: true).toList();
       expect(_listContainsPath(list, 'pubspec.yaml'), isTrue);
       expect(_listContainsPath(list, 'lib/node_io.dart'), isTrue);
       expect(_listContainsPath(list, 'lib/src/directory.dart'), isTrue);
@@ -84,7 +82,7 @@ void main() {
     });
 
     test('listSync recursive', () {
-      var list = Directory.current.listSync(recursive: true);
+      final list = Directory.current.listSync(recursive: true);
       expect(_listContainsPath(list, 'pubspec.yaml'), isTrue);
       expect(_listContainsPath(list, 'lib/node_io.dart'), isTrue);
       expect(_listContainsPath(list, 'lib/src/directory.dart'), isTrue);
@@ -107,7 +105,7 @@ void main() {
     });
 
     test('create_delete', () async {
-      var directory = dir('delete_dir');
+      final directory = dir('delete_dir');
       await directory.create();
       expect(await directory.exists(), isTrue);
       await directory.delete();
@@ -115,8 +113,8 @@ void main() {
     });
 
     test('create_delete recursive', () async {
-      var outer = dir('delete_dir');
-      var inner = dir('delete_dir/inner');
+      final outer = dir('delete_dir');
+      final inner = dir('delete_dir/inner');
       await inner.create(recursive: true);
       expect(await inner.exists(), isTrue);
       expect(await outer.exists(), isTrue);
@@ -126,7 +124,7 @@ void main() {
     });
 
     test('createSync_deleteSync', () {
-      var directory = dir('delete_dir');
+      final directory = dir('delete_dir');
       directory.createSync();
       expect(directory.existsSync(), isTrue);
       directory.deleteSync();
@@ -134,8 +132,8 @@ void main() {
     });
 
     test('createSync_deleteSync recursive', () {
-      var outer = dir('delete_dir');
-      var inner = dir('delete_dir/inner');
+      final outer = dir('delete_dir');
+      final inner = dir('delete_dir/inner');
       inner.createSync(recursive: true);
       expect(inner.existsSync(), isTrue);
       expect(outer.existsSync(), isTrue);
@@ -145,8 +143,8 @@ void main() {
     });
 
     test('rename', () async {
-      var src = Directory('src');
-      var dst = Directory('dst');
+      final src = Directory('src');
+      final dst = Directory('dst');
       try {
         await src.delete();
       } catch (_) {}
